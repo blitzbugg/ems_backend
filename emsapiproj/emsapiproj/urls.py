@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include # include function is used to include the urls of the app in the project urls.py file.
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('apibackendapp.urls')) # include the urls of the app in the project urls.py file. we can use any name instead of 'api/' but it is a good practice to use 'api/' for api urls.
 ]
+  
+
+
+
