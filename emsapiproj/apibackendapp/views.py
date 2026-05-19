@@ -15,6 +15,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    # Bypass the authentication just in case for testing purpose, we will remove it later
+     # permission_classes = [] # to bypass the authentication for testing purpose, we will remove it later
+
 
 
 class UserDetailsViewSet(viewsets.ModelViewSet):
