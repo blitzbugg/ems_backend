@@ -1,6 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+from django.conf import settings
 # Create your models here.
+
+# a file save code to generate token, just incase the signup serializer fails to create a new user
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 
 class Department(models.Model):
     DepartmentID = models.AutoField(primary_key=True)

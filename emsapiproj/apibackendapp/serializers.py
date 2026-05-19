@@ -2,7 +2,33 @@ from rest_framework import serializers
 # Import all the models from the current directory's models.py file.
 from .models import Department, Employee, Projects,UserDetails
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.hashers import make_password
+
+# signup serializer
+class SignupSerializer(serializers.ModelSerializer):
+    group_name = serializers.CharField(write_only=True,required=True)
+
+    def create(self, validated_data):
+        #validated_data is the data that is passed from the request body and it is validated by the serializer, we can use this data to create a new user in the database.
+        self.group_name = validated_data.pop('group_name', None)
+        validated_data['password'] = make_password(validated_data.get('password'))
+        user = super(SignupSerializer, self).create(validated_data)
+        if self.group_name:
+            group, created = Group.objects.get_or_create(name=self.group_name)
+            user.groups.add(group)
+        return user
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'group_name')
+
+# login serializer
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
